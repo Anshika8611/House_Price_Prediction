@@ -1,29 +1,55 @@
 import streamlit as st
 import pandas as pd
-
-from model import load_data, preprocess, train_model, predict
+import numpy as np
+import pickle
+import os
 
 st.set_page_config(page_title="House Price Predictor", layout="centered")
 
-st.title("🏠 House Price Prediction App")
+st.title("🏠 House Price Prediction")
+st.write("Enter house details to predict price")
 
-st.write("Train model and generate predictions using Kaggle dataset")
+# ================================
+# Load Model (if saved)
+# ================================
 
-if st.button("🚀 Run Model"):
-    train, test = load_data()
-    X, y, test_processed, test_ids = preprocess(train, test)
+MODEL_PATH = "model.pkl"
 
-    model = train_model(X, y)
-    submission = predict(model, test_processed, test_ids)
+if os.path.exists(MODEL_PATH):
+    model = pickle.load(open(MODEL_PATH, "rb"))
+else:
+    st.error("❌ Model not found! Please train model first.")
+    st.stop()
 
-    st.success("✅ Prediction Done!")
+# ================================
+# User Inputs (basic features)
+# ================================
 
-    st.write("### 📊 Sample Output:")
-    st.dataframe(submission.head())
+overall_qual = st.slider("Overall Quality (1-10)", 1, 10, 5)
+gr_liv_area = st.number_input("Living Area (sq ft)", 500, 5000, 1500)
+garage_cars = st.slider("Garage Capacity (cars)", 0, 5, 1)
+total_bsmt_sf = st.number_input("Basement Area (sq ft)", 0, 3000, 800)
+year_built = st.number_input("Year Built", 1900, 2025, 2000)
 
-    st.download_button(
-        label="📥 Download Submission",
-        data=submission.to_csv(index=False),
-        file_name="submission.csv",
-        mime="text/csv"
-    )
+# ================================
+# Prediction Button
+# ================================
+
+if st.button("🔮 Predict Price"):
+
+    # Create input dataframe
+    input_data = pd.DataFrame({
+        "OverallQual": [overall_qual],
+        "GrLivArea": [gr_liv_area],
+        "GarageCars": [garage_cars],
+        "TotalBsmtSF": [total_bsmt_sf],
+        "YearBuilt": [year_built]
+    })
+
+    try:
+        prediction = model.predict(input_data)[0]
+
+        st.success(f"💰 Estimated House Price: ₹ {int(prediction):,}")
+
+    except Exception as e:
+        st.error("❌ Feature mismatch! Model needs same features as training data.")
