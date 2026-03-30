@@ -8,6 +8,16 @@ st.set_page_config(page_title="House Price Predictor", layout="centered")
 
 st.title("🏠 House Price Prediction")
 st.write("Enter house details to predict price")
+from model import train_model, predict
+import os
+
+MODEL_PATH = "model.pkl"
+
+# Agar model nahi hai → auto train karo
+if not os.path.exists(MODEL_PATH):
+    st.warning("⚙️ Training model for first time...")
+    train_model()
+    st.success("✅ Model trained successfully!")
 
 # ================================
 # Load Model (if saved)
