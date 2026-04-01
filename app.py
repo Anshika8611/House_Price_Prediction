@@ -35,11 +35,29 @@ else:
 # User Inputs (basic features)
 # ================================
 
+
 overall_qual = st.slider("Overall Quality (1-10)", 1, 10, 5)
-gr_liv_area = st.number_input("Living Area (sq ft)", 500, 5000, 1500)
-garage_cars = st.slider("Garage Capacity (cars)", 0, 5, 1)
-total_bsmt_sf = st.number_input("Basement Area (sq ft)", 0, 3000, 800)
-year_built = st.number_input("Year Built", 1900, 2025, 2000)
+
+gr_liv_area = st.number_input(
+    "Living Area (sq ft)", 500, 5000, 1500)
+
+garage_cars = st.slider(
+    "Garage Capacity (cars)", 0, 5, 1)
+
+total_bsmt_sf = st.number_input(
+    "Basement Area (sq ft)", 0, 3000, 800)
+
+year_built = st.number_input(
+    "Year Built", 1900, 2025, 2000)
+
+full_bath = st.slider(
+    "Full Bathrooms", 0, 5, 2)
+
+tot_rms = st.slider(
+    "Total Rooms Above Ground", 2, 15, 6)
+
+lot_area = st.number_input(
+    "Lot Area (sq ft)", 1000, 100000, 8000)
 
 # ================================
 # Prediction Button
